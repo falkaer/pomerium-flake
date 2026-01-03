@@ -13,7 +13,6 @@ let
   flakePkg = self.packages.${pkgs.system}.pomerium;
 in
 {
-  # Prevent the upstream module from loading
   disabledModules = [ "services/networking/pomerium.nix" ];
 
   options.services.pomerium = {
@@ -47,8 +46,8 @@ in
 
         Specifying configFile will override this in its entirety.
 
-        See the Pomerium
-        configuration reference (https://pomerium.io/reference/) for more information about what to put
+        See [the Pomerium
+        configuration reference](https://pomerium.io/reference/) for more information about what to put
         here.
       '';
       default = { };
@@ -60,7 +59,7 @@ in
       default = null;
       description = ''
         Path to file containing secrets for Pomerium, in systemd
-        EnvironmentFile format. See the systemd.exec(5) man page.
+        EnvironmentFile format. See the {manpage}`systemd.exec(5)` man page.
       '';
     };
   };
@@ -83,12 +82,10 @@ in
         ]
         ++ (optional (cfg.useACMEHost != null) "acme-${cfg.useACMEHost}.service");
         wantedBy = [ "multi-user.target" ];
-
         environment = optionalAttrs (cfg.useACMEHost != null) {
           CERTIFICATE_FILE = "fullchain.pem";
           CERTIFICATE_KEY_FILE = "key.pem";
         };
-
         startLimitIntervalSec = 60;
         script = ''
           if [[ -v CREDENTIALS_DIRECTORY ]]; then
