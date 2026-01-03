@@ -1,16 +1,24 @@
 {
-  description = "Pomerium - Identity-aware access proxy (prebuilt binaries)";
+  description = "Pomerium prebuilt binaries + NixOS module using the flake package";
+
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
   };
+
   outputs =
     {
       self,
       nixpkgs,
       flake-utils,
     }:
-    flake-utils.lib.eachSystem [ "x86_64-linux" "aarch64-linux" ] (
+    let
+      systems = [
+        "x86_64-linux"
+        "aarch64-linux"
+      ];
+    in
+    flake-utils.lib.eachSystem systems (
       system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
@@ -32,7 +40,6 @@
           inherit version;
 
           src = { inherit x86_64-linux aarch64-linux; }.${system};
-
           sourceRoot = ".";
 
           nativeBuildInputs = [ pkgs.autoPatchelfHook ];
@@ -40,11 +47,9 @@
 
           installPhase = ''
             runHook preInstall
-            mkdir -p $out/bin
-            # The tarball typically contains a single 'pomerium' binary.
-            # Using a wildcard to be robust to directory names.
-            cp */pomerium $out/bin/
-            chmod +x $out/bin/pomerium
+            mkdir -p "$out/bin"
+            cp */pomerium "$out/bin/"
+            chmod +x "$out/bin/pomerium"
             runHook postInstall
           '';
 
@@ -57,16 +62,16 @@
               "x86_64-linux"
               "aarch64-linux"
             ];
-            maintainers = [ ];
           };
         };
 
         packages.default = self.packages.${system}.pomerium;
 
-        apps.pomerium = flake-utils.lib.mkApp {
-          drv = self.packages.${system}.pomerium;
-        };
+        apps.pomerium = flake-utils.lib.mkApp { drv = self.packages.${system}.pomerium; };
         apps.default = self.apps.${system}.pomerium;
       }
-    );
+    )
+    // {
+      nixosModules.pomerium = import ./pomerium.nix self;
+    };
 }
