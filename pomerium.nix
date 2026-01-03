@@ -13,7 +13,7 @@ let
   flakePkg = self.packages.${pkgs.system}.pomerium;
 in
 {
-  disabledModules = [ "services/networking/pomerium.nix" ];
+  disabledModules = [ "services/web-servers/pomerium.nix" ];
 
   options.services.pomerium = {
     enable = mkEnableOption "the Pomerium authenticating reverse proxy";
