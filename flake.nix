@@ -20,14 +20,14 @@
       system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-        version = "v0.32.9";
+        version = "v0.33.0";
         x86_64-linux = pkgs.fetchurl {
           url = "https://github.com/pomerium/pomerium/releases/download/${version}/pomerium-linux-amd64.tar.gz";
-          hash = "sha256-oB5EGjX0vQA76J5ahhuamIegXFatDJFKZFbVysVLCRA=";
+          hash = "sha256-zYLLH51oqPwmifQaZA1npJiDNnErC7vrrwbhY4VJ6Ww=";
         };
         aarch64-linux = pkgs.fetchurl {
           url = "https://github.com/pomerium/pomerium/releases/download/${version}/pomerium-linux-arm64.tar.gz";
-          hash = "sha256-j9t8JPZJ0cFuXfV6qIYD5+Tx1esceWFjxgnxColQHr0=";
+          hash = "sha256-7RBwLTvHo8d5+FSuFnTCM5OEPZbtRK/VKN8p6Gn2VkM=";
         };
       in
       {
